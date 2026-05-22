@@ -2,85 +2,62 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# -------------------------------------------------
+# ---------------------------------------
 # PAGE CONFIG
-# -------------------------------------------------
+# ---------------------------------------
 
 st.set_page_config(
     page_title="Swiggy Dashboard",
     layout="wide"
 )
 
-st.title("🍔 Swiggy Restaurant Analytics Dashboard")
+st.title("🍔 Swiggy Restaurant Dashboard")
 
-# -------------------------------------------------
-# LOAD DATA
-# -------------------------------------------------
+# ---------------------------------------
+# LOAD CSV
+# ---------------------------------------
 
-try:
-    df = pd.read_csv("swiggy_restaurants.csv")
-except:
-    st.error("❌ CSV file not found")
-    st.stop()
+df = pd.read_csv("swiggy_restaurants.csv")
 
-# -------------------------------------------------
-# CLEAN COLUMN NAMES
-# -------------------------------------------------
-
-df.columns = df.columns.str.strip().str.lower()
-
-# -------------------------------------------------
+# ---------------------------------------
 # SHOW DATA
-# -------------------------------------------------
+# ---------------------------------------
 
-st.subheader("📄 Dataset Preview")
-st.dataframe(df.head())
+st.subheader("Dataset")
 
-st.subheader("📌 Dataset Columns")
-st.write(df.columns.tolist())
+st.write(df.head())
 
-# -------------------------------------------------
-# AUTO DETECT IMPORTANT COLUMNS
-# -------------------------------------------------
+# ---------------------------------------
+# CLEAN COLUMN NAMES
+# ---------------------------------------
 
-rating_col = None
-cost_col = None
-area_col = None
+df.columns = df.columns.str.lower().str.strip()
 
-for col in df.columns:
+# ---------------------------------------
+# PRINT COLUMNS
+# ---------------------------------------
 
-    if "rating" in col:
-        rating_col = col
+st.write("Columns:")
+st.write(df.columns)
 
-    if "cost" in col:
-        cost_col = col
+# ---------------------------------------
+# USE EXACT COLUMN NAMES
+# ---------------------------------------
 
-    if "area" in col:
-        area_col = col
+# CHANGE THESE IF NEEDED
+rating_col = df.columns[3]
+cost_col = df.columns[5]
+area_col = df.columns[7]
 
-# -------------------------------------------------
-# CHECK REQUIRED COLUMNS
-# -------------------------------------------------
+# ---------------------------------------
+# CLEAN DATA
+# ---------------------------------------
 
-if rating_col is None:
-    st.error("❌ Rating column not found")
-    st.stop()
-
-if cost_col is None:
-    st.error("❌ Cost column not found")
-    st.stop()
-
-# -------------------------------------------------
-# DATA CLEANING
-# -------------------------------------------------
-
-# Convert ratings to numeric
 df[rating_col] = pd.to_numeric(
     df[rating_col],
     errors="coerce"
 )
 
-# Convert cost to numeric
 df[cost_col] = (
     df[cost_col]
     .astype(str)
@@ -92,21 +69,16 @@ df[cost_col] = pd.to_numeric(
     errors="coerce"
 )
 
-# Remove null values
-df = df.dropna(
-    subset=[rating_col, cost_col]
-)
+df = df.dropna()
 
-# -------------------------------------------------
+# ---------------------------------------
 # METRICS
-# -------------------------------------------------
+# ---------------------------------------
 
-st.subheader("📊 Dashboard Metrics")
-
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
 col1.metric(
-    "Total Restaurants",
+    "Restaurants",
     len(df)
 )
 
@@ -115,54 +87,44 @@ col2.metric(
     round(df[rating_col].mean(), 2)
 )
 
-col3.metric(
-    "Average Cost",
-    round(df[cost_col].mean(), 2)
-)
+# ---------------------------------------
+# GRAPH 1
+# ---------------------------------------
 
-# -------------------------------------------------
-# GRAPH 1 - RATING DISTRIBUTION
-# -------------------------------------------------
+st.subheader("Ratings Distribution")
 
-st.subheader("⭐ Ratings Distribution")
-
-fig1, ax1 = plt.subplots(figsize=(8,4))
+fig1, ax1 = plt.subplots()
 
 ax1.hist(df[rating_col], bins=20)
 
-ax1.set_xlabel("Ratings")
-ax1.set_ylabel("Count")
-
 st.pyplot(fig1)
 
-# -------------------------------------------------
-# GRAPH 2 - TOP AREAS
-# -------------------------------------------------
+# ---------------------------------------
+# GRAPH 2
+# ---------------------------------------
 
-if area_col is not None:
+st.subheader("Top Areas")
 
-    st.subheader("📍 Top Areas")
+top_areas = df[area_col].value_counts().head(10)
 
-    top_areas = df[area_col].value_counts().head(10)
+fig2, ax2 = plt.subplots()
 
-    fig2, ax2 = plt.subplots(figsize=(10,4))
+ax2.bar(
+    top_areas.index,
+    top_areas.values
+)
 
-    ax2.bar(
-        top_areas.index,
-        top_areas.values
-    )
+plt.xticks(rotation=45)
 
-    plt.xticks(rotation=45)
+st.pyplot(fig2)
 
-    st.pyplot(fig2)
+# ---------------------------------------
+# GRAPH 3
+# ---------------------------------------
 
-# -------------------------------------------------
-# GRAPH 3 - COST VS RATING
-# -------------------------------------------------
+st.subheader("Cost vs Rating")
 
-st.subheader("💰 Cost vs Rating")
-
-fig3, ax3 = plt.subplots(figsize=(8,4))
+fig3, ax3 = plt.subplots()
 
 ax3.scatter(
     df[cost_col],
@@ -174,8 +136,8 @@ ax3.set_ylabel("Rating")
 
 st.pyplot(fig3)
 
-# -------------------------------------------------
-# SUCCESS MESSAGE
-# -------------------------------------------------
+# ---------------------------------------
+# SUCCESS
+# ---------------------------------------
 
-st.success("✅ Dashboard Loaded Successfully!")
+st.success("Dashboard Loaded Successfully!")
