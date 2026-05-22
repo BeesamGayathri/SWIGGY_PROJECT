@@ -3,52 +3,73 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Page Config
+# -----------------------------
+# PAGE CONFIG
+# -----------------------------
 st.set_page_config(
-    page_title="Swiggy Restaurant Dashboard",
+    page_title="Swiggy Dashboard",
     layout="wide"
 )
 
-# Title
 st.title("🍔 Swiggy Restaurant Analytics Dashboard")
 
-# Load Dataset
+# -----------------------------
+# LOAD DATA
+# -----------------------------
 df = pd.read_csv("swiggy_restaurants.csv")
 
-# Show Columns for Debugging
-st.subheader("Dataset Columns")
-st.write(df.columns)
+# Clean column names
+df.columns = df.columns.str.strip().str.lower()
 
-# Convert column names to lowercase
-df.columns = df.columns.str.lower()
-
-# Display first rows
-st.subheader("Dataset Preview")
+# Show dataset info
+st.subheader("📄 Dataset Preview")
 st.dataframe(df.head())
+
+st.subheader("📌 Available Columns")
+st.write(df.columns.tolist())
+
+# -----------------------------
+# AUTO DETECT COLUMNS
+# -----------------------------
+
+rating_col = None
+cost_col = None
+area_col = None
+cuisine_col = None
+
+for col in df.columns:
+
+    if "rating" in col:
+        rating_col = col
+
+    if "cost" in col:
+        cost_col = col
+
+    if "area" in col:
+        area_col = col
+
+    if "cuisine" in col:
+        cuisine_col = col
+
+# -----------------------------
+# CHECK REQUIRED COLUMNS
+# -----------------------------
+if rating_col is None:
+    st.error("❌ No rating column found")
+    st.stop()
+
+if cost_col is None:
+    st.error("❌ No cost column found")
+    st.stop()
 
 # -----------------------------
 # DATA CLEANING
 # -----------------------------
 
-# Rating column handling
-if 'avg_rating' in df.columns:
-    rating_col = 'avg_rating'
-elif 'avgrating' in df.columns:
-    rating_col = 'avgrating'
-else:
-    st.error("Rating column not found in dataset")
-    st.stop()
-
-df[rating_col] = pd.to_numeric(df[rating_col], errors='coerce')
-
-# Cost column handling
-if 'cost_for_two' in df.columns:
-    cost_col = 'cost_for_two'
-elif 'costfortwo' in df.columns:
-    cost_col = 'costfortwo'
-else:
-    st.error("Cost column not found in dataset")
-    st.stop()
+df[rating_col] = pd.to_numeric(
+    df[rating_col],
+    errors='coerce'
+)
 
 df[cost_col] = (
     df[cost_col]
@@ -57,7 +78,6 @@ df[cost_col] = (
     .astype(float)
 )
 
-# Drop null ratings
 df.dropna(subset=[rating_col], inplace=True)
 
 # -----------------------------
@@ -66,25 +86,28 @@ df.dropna(subset=[rating_col], inplace=True)
 
 st.sidebar.header("Filters")
 
-# Area Filter
-if 'area' in df.columns:
+if area_col is not None:
+
     selected_area = st.sidebar.selectbox(
         "Select Area",
-        ["All"] + list(df['area'].dropna().unique())
+        ["All"] + list(df[area_col].dropna().unique())
     )
 
     if selected_area != "All":
-        df = df[df['area'] == selected_area]
+        df = df[df[area_col] == selected_area]
 
 # -----------------------------
 # METRICS
 # -----------------------------
 
-st.subheader("Dashboard Metrics")
+st.subheader("📊 Dashboard Metrics")
 
 col1, col2, col3 = st.columns(3)
 
-col1.metric("Total Restaurants", len(df))
+col1.metric(
+    "Total Restaurants",
+    len(df)
+)
 
 col2.metric(
     "Average Rating",
@@ -100,9 +123,9 @@ col3.metric(
 # RATING DISTRIBUTION
 # -----------------------------
 
-st.subheader("📊 Distribution of Ratings")
+st.subheader("⭐ Distribution of Ratings")
 
-fig1, ax1 = plt.subplots(figsize=(8, 4))
+fig1, ax1 = plt.subplots(figsize=(8,4))
 
 sns.histplot(
     df[rating_col],
@@ -117,13 +140,13 @@ st.pyplot(fig1)
 # TOP AREAS
 # -----------------------------
 
-if 'area' in df.columns:
+if area_col is not None:
 
-    st.subheader("📍 Top Areas by Restaurant Count")
+    st.subheader("📍 Top Areas")
 
-    fig2, ax2 = plt.subplots(figsize=(10, 4))
+    fig2, ax2 = plt.subplots(figsize=(10,4))
 
-    area_counts = df['area'].value_counts().head(10)
+    area_counts = df[area_col].value_counts().head(10)
 
     sns.barplot(
         x=area_counts.index,
@@ -141,7 +164,7 @@ if 'area' in df.columns:
 
 st.subheader("💰 Cost vs Rating")
 
-fig3, ax3 = plt.subplots(figsize=(8, 4))
+fig3, ax3 = plt.subplots(figsize=(8,4))
 
 sns.scatterplot(
     x=df[cost_col],
@@ -149,22 +172,22 @@ sns.scatterplot(
     ax=ax3
 )
 
-ax3.set_xlabel("Cost for Two")
-ax3.set_ylabel("Average Rating")
+ax3.set_xlabel("Cost")
+ax3.set_ylabel("Rating")
 
 st.pyplot(fig3)
 
 # -----------------------------
-# PIE CHART
+# TOP CUISINES
 # -----------------------------
 
-if 'cuisines' in df.columns:
+if cuisine_col is not None:
 
     st.subheader("🍕 Top Cuisines")
 
-    cuisine_counts = df['cuisines'].value_counts().head(5)
+    cuisine_counts = df[cuisine_col].value_counts().head(5)
 
-    fig4, ax4 = plt.subplots(figsize=(6, 6))
+    fig4, ax4 = plt.subplots(figsize=(6,6))
 
     ax4.pie(
         cuisine_counts.values,
@@ -175,7 +198,7 @@ if 'cuisines' in df.columns:
     st.pyplot(fig4)
 
 # -----------------------------
-# SUCCESS MESSAGE
+# SUCCESS
 # -----------------------------
 
-st.success("✅ Swiggy Dashboard Loaded Successfully!")
+st.success("✅ Dashboard Loaded Successfully!")
