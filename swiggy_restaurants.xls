@@ -1,0 +1,29 @@
+id,name,cuisines,avg_rating,total_ratings,cost_for_two,delivery_time,area,veg
+37103,KFC,"Burgers, Fast Food, Rolls & Wraps",4.2,17K+,₹400 for two,29,Abids,
+236476,Pizza Hut,Pizzas,4.4,4.3K+,₹350 for two,41,Moosarambagh,
+233052,Oven Story Pizza,"Pizzas, Pastas, Italian, Desserts, Beverages",4.4,7.2K+,₹400 for two,22,Abids,
+639526,Dum Safar Biryani,"Biryani, Hyderabadi, Kebabs, North Indian, barbeque",3.8,597,₹500 for two,34,ABIDS,
+367769,Lucky Restaurant,"Biryani, Tandoor",4.0,86K+,₹300 for two,38,Banjara Hills,
+726147,Bakingo,"Bakery, Desserts, Beverages, Snacks",4.6,14K+,₹299 for two,35,Saroornagar,
+57903,Capital Multi Cuisine Restaurant,"Haleem, Biryani, Kebabs",3.8,186K+,₹250 for two,31,Malakpet,
+262087,Imperial Multicuisine Restaurant,"Biryani, Chinese, Indian, Kebabs, Tandoor",4.2,27K+,₹400 for two,37,Redhills,
+356688,Baskin Robbins - Ice Cream Desserts,"Desserts, Ice Cream",4.7,1.9K+,₹300 for two,26,Himayatnagar,True
+16158,Royal Tiffin Centre,South Indian,4.0,85K+,₹150 for two,35,Abids & Koti,
+355747,Grameen Kulfi,"Ice Cream, Desserts",4.7,1.8K+,₹120 for two,31,Narayanguda,True
+12046,Subway,"sandwich, Salads, wrap, Healthy Food",4.1,41K+,₹350 for two,35,Himayath Nagar,
+237003,Burger King,"Burgers, American",4.2,29K+,₹350 for two,35,New Malakpet,
+118745,McDonald's,"Burgers, Beverages, Cafe, Desserts",4.2,23K+,₹400 for two,35,Abids,
+233055,The Good Bowl,"Biryani, Pastas, Punjabi, Desserts, Beverages",4.2,1.9K+,₹400 for two,35,Abids,
+173999,Taco Bell,"Mexican, Fast Food, Snacks",4.0,9.5K+,₹300 for two,35,New Malakpet,
+565287,Wendy's Burgers,"Burgers, American, Fast Food, Snacks",4.0,5.3K+,₹200 for two,37,Abids,
+233057,LunchBox - Meals and Thalis,"Thalis, North Indian, Biryani, South Indian, Desserts, Beverages",4.3,5.7K+,₹200 for two,33,Abids,
+233050,"Faasos - Wraps, Rolls & Shawarma","Kebabs, Fast Food, Snacks, American, Healthy Food, Desserts, Beverages",3.8,5.3K+,₹200 for two,41,Abids,
+560732,Natural Ice Cream,"Ice Cream, Desserts",4.7,4.4K+,₹150 for two,34,Himayat Nagar,True
+1354641,Pizza Hut,Pizzas,4.3,15,₹350 for two,38,Odeon Mall,
+1194333,Chinese Wok,"Chinese, Asian, Tibetan, Desserts",4.0,303,₹250 for two,39,Oden Mall,
+958796,The Belgian Waffle Co.,"Waffle, Desserts, Ice Cream, Beverages",4.6,1.1K+,₹200 for two,38,Goshamahal Circle,True
+1194334,Big Bowl,"Chinese, Tibetan, Desserts",4.1,163,₹250 for two,38,Oden Mall,
+967289,Cheesecake & Co.,"Desserts, Bakery",4.6,404,₹300 for two,34,Kothapet & Dilsukhnagar,True
+1172926,Raju Gari Biryani,"Chinese, Biryani, Indian",3.7,559,₹300 for two,32,Uppal,
+7003,Almond House,"Sweets, Desserts, Snacks, Beverages",4.7,21K+,₹500 for two,36,Himayath Nagar,True
+1098942,The Belgian Waffle Co.,"Waffle, Desserts, Ice Cream, Beverages",4.6,560,₹200 for two,40,MOZAMJAHI MARKET,True
