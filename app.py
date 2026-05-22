@@ -3,9 +3,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# -----------------------------
+# -----------------------------------
 # PAGE CONFIG
-# -----------------------------
+# -----------------------------------
+
 st.set_page_config(
     page_title="Swiggy Dashboard",
     layout="wide"
@@ -13,24 +14,22 @@ st.set_page_config(
 
 st.title("🍔 Swiggy Restaurant Analytics Dashboard")
 
-# -----------------------------
+# -----------------------------------
 # LOAD DATA
-# -----------------------------
+# -----------------------------------
+
 df = pd.read_csv("swiggy_restaurants.csv")
 
 # Clean column names
 df.columns = df.columns.str.strip().str.lower()
 
-# Show dataset info
-st.subheader("📄 Dataset Preview")
+# Show dataset
+st.subheader("Dataset Preview")
 st.dataframe(df.head())
 
-st.subheader("📌 Available Columns")
-st.write(df.columns.tolist())
-
-# -----------------------------
-# AUTO DETECT COLUMNS
-# -----------------------------
+# -----------------------------------
+# COLUMN DETECTION
+# -----------------------------------
 
 rating_col = None
 cost_col = None
@@ -51,42 +50,38 @@ for col in df.columns:
     if "cuisine" in col:
         cuisine_col = col
 
-# -----------------------------
-# CHECK REQUIRED COLUMNS
-# -----------------------------
-if rating_col is None:
-    st.error("❌ No rating column found")
-    st.stop()
-
-if cost_col is None:
-    st.error("❌ No cost column found")
-    st.stop()
-
-# -----------------------------
+# -----------------------------------
 # DATA CLEANING
-# -----------------------------
+# -----------------------------------
 
+# Convert ratings to numeric
 df[rating_col] = pd.to_numeric(
     df[rating_col],
-    errors='coerce'
+    errors="coerce"
 )
 
+# Extract numbers from cost column
 df[cost_col] = (
     df[cost_col]
     .astype(str)
     .str.extract(r'(\d+)')[0]
-    .astype(float)
 )
 
-df.dropna(subset=[rating_col], inplace=True)
+df[cost_col] = pd.to_numeric(
+    df[cost_col],
+    errors="coerce"
+)
 
-# -----------------------------
+# Remove null values
+df.dropna(subset=[rating_col, cost_col], inplace=True)
+
+# -----------------------------------
 # SIDEBAR FILTER
-# -----------------------------
+# -----------------------------------
 
 st.sidebar.header("Filters")
 
-if area_col is not None:
+if area_col:
 
     selected_area = st.sidebar.selectbox(
         "Select Area",
@@ -96,11 +91,11 @@ if area_col is not None:
     if selected_area != "All":
         df = df[df[area_col] == selected_area]
 
-# -----------------------------
+# -----------------------------------
 # METRICS
-# -----------------------------
+# -----------------------------------
 
-st.subheader("📊 Dashboard Metrics")
+st.subheader("Dashboard Metrics")
 
 col1, col2, col3 = st.columns(3)
 
@@ -119,69 +114,65 @@ col3.metric(
     round(df[cost_col].mean(), 2)
 )
 
-# -----------------------------
-# RATING DISTRIBUTION
-# -----------------------------
+# -----------------------------------
+# GRAPH 1 - RATINGS
+# -----------------------------------
 
-st.subheader("⭐ Distribution of Ratings")
+st.subheader("⭐ Rating Distribution")
 
 fig1, ax1 = plt.subplots(figsize=(8,4))
 
-sns.histplot(
-    df[rating_col],
-    bins=20,
-    kde=True,
-    ax=ax1
-)
+ax1.hist(df[rating_col], bins=20)
+
+ax1.set_xlabel("Ratings")
+ax1.set_ylabel("Count")
 
 st.pyplot(fig1)
 
-# -----------------------------
-# TOP AREAS
-# -----------------------------
+# -----------------------------------
+# GRAPH 2 - TOP AREAS
+# -----------------------------------
 
-if area_col is not None:
+if area_col:
 
     st.subheader("📍 Top Areas")
 
-    fig2, ax2 = plt.subplots(figsize=(10,4))
-
     area_counts = df[area_col].value_counts().head(10)
 
-    sns.barplot(
-        x=area_counts.index,
-        y=area_counts.values,
-        ax=ax2
+    fig2, ax2 = plt.subplots(figsize=(10,4))
+
+    ax2.bar(
+        area_counts.index,
+        area_counts.values
     )
 
     plt.xticks(rotation=45)
 
     st.pyplot(fig2)
 
-# -----------------------------
-# COST VS RATING
-# -----------------------------
+# -----------------------------------
+# GRAPH 3 - COST VS RATING
+# -----------------------------------
 
 st.subheader("💰 Cost vs Rating")
 
 fig3, ax3 = plt.subplots(figsize=(8,4))
 
-sns.scatterplot(
-    x=df[cost_col],
-    y=df[rating_col],
-    ax=ax3
+ax3.scatter(
+    df[cost_col],
+    df[rating_col]
 )
 
-ax3.set_xlabel("Cost")
+ax3.set_xlabel("Cost for Two")
 ax3.set_ylabel("Rating")
 
 st.pyplot(fig3)
 
-# -----------------------------
-# TOP CUISINES
-# -----------------------------
+# -----------------------------------
+# GRAPH 4 - TOP CUISINES
+# -----------------------------------
 
-if cuisine_col is not None:
+if cuisine_col:
 
     st.subheader("🍕 Top Cuisines")
 
@@ -197,8 +188,8 @@ if cuisine_col is not None:
 
     st.pyplot(fig4)
 
-# -----------------------------
-# SUCCESS
-# -----------------------------
+# -----------------------------------
+# SUCCESS MESSAGE
+# -----------------------------------
 
 st.success("✅ Dashboard Loaded Successfully!")
