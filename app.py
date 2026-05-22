@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
 
-# -----------------------------------
-# PAGE CONFIG
-# -----------------------------------
+# ---------------------------------------------------
+# PAGE SETTINGS
+# ---------------------------------------------------
 
 st.set_page_config(
     page_title="Swiggy Dashboard",
@@ -14,27 +13,39 @@ st.set_page_config(
 
 st.title("🍔 Swiggy Restaurant Analytics Dashboard")
 
-# -----------------------------------
+# ---------------------------------------------------
 # LOAD DATA
-# -----------------------------------
+# ---------------------------------------------------
 
-df = pd.read_csv("swiggy_restaurants.csv")
+try:
+    df = pd.read_csv("swiggy_restaurants.csv")
+except:
+    st.error("CSV file not found")
+    st.stop()
 
-# Clean column names
+# ---------------------------------------------------
+# CLEAN COLUMN NAMES
+# ---------------------------------------------------
+
 df.columns = df.columns.str.strip().str.lower()
 
-# Show dataset
+# ---------------------------------------------------
+# SHOW DATA
+# ---------------------------------------------------
+
 st.subheader("Dataset Preview")
 st.dataframe(df.head())
 
-# -----------------------------------
-# COLUMN DETECTION
-# -----------------------------------
+st.subheader("Available Columns")
+st.write(df.columns.tolist())
+
+# ---------------------------------------------------
+# AUTO DETECT COLUMNS
+# ---------------------------------------------------
 
 rating_col = None
 cost_col = None
 area_col = None
-cuisine_col = None
 
 for col in df.columns:
 
@@ -47,20 +58,29 @@ for col in df.columns:
     if "area" in col:
         area_col = col
 
-    if "cuisine" in col:
-        cuisine_col = col
+# ---------------------------------------------------
+# CHECK COLUMNS
+# ---------------------------------------------------
 
-# -----------------------------------
-# DATA CLEANING
-# -----------------------------------
+if rating_col is None:
+    st.error("No rating column found")
+    st.stop()
 
-# Convert ratings to numeric
+if cost_col is None:
+    st.error("No cost column found")
+    st.stop()
+
+# ---------------------------------------------------
+# CLEAN DATA
+# ---------------------------------------------------
+
+# Convert ratings
 df[rating_col] = pd.to_numeric(
     df[rating_col],
     errors="coerce"
 )
 
-# Extract numbers from cost column
+# Convert cost
 df[cost_col] = (
     df[cost_col]
     .astype(str)
@@ -72,35 +92,28 @@ df[cost_col] = pd.to_numeric(
     errors="coerce"
 )
 
-# Remove null values
-df.dropna(subset=[rating_col, cost_col], inplace=True)
+# Remove null rows
+df = df.dropna(
+    subset=[rating_col, cost_col]
+)
 
-# -----------------------------------
-# SIDEBAR FILTER
-# -----------------------------------
+# ---------------------------------------------------
+# SHOW CLEANED DATA
+# ---------------------------------------------------
 
-st.sidebar.header("Filters")
+st.subheader("Cleaned Data")
+st.dataframe(df.head())
 
-if area_col:
-
-    selected_area = st.sidebar.selectbox(
-        "Select Area",
-        ["All"] + list(df[area_col].dropna().unique())
-    )
-
-    if selected_area != "All":
-        df = df[df[area_col] == selected_area]
-
-# -----------------------------------
+# ---------------------------------------------------
 # METRICS
-# -----------------------------------
+# ---------------------------------------------------
 
 st.subheader("Dashboard Metrics")
 
 col1, col2, col3 = st.columns(3)
 
 col1.metric(
-    "Total Restaurants",
+    "Restaurants",
     len(df)
 )
 
@@ -114,82 +127,62 @@ col3.metric(
     round(df[cost_col].mean(), 2)
 )
 
-# -----------------------------------
+# ---------------------------------------------------
 # GRAPH 1 - RATINGS
-# -----------------------------------
+# ---------------------------------------------------
 
-st.subheader("⭐ Rating Distribution")
+st.subheader("⭐ Ratings Distribution")
 
-fig1, ax1 = plt.subplots(figsize=(8,4))
+fig1, ax1 = plt.subplots()
 
-ax1.hist(df[rating_col], bins=20)
+ax1.hist(df[rating_col])
 
 ax1.set_xlabel("Ratings")
 ax1.set_ylabel("Count")
 
 st.pyplot(fig1)
 
-# -----------------------------------
+# ---------------------------------------------------
 # GRAPH 2 - TOP AREAS
-# -----------------------------------
+# ---------------------------------------------------
 
 if area_col:
 
     st.subheader("📍 Top Areas")
 
-    area_counts = df[area_col].value_counts().head(10)
+    top_areas = df[area_col].value_counts().head(10)
 
-    fig2, ax2 = plt.subplots(figsize=(10,4))
+    fig2, ax2 = plt.subplots()
 
     ax2.bar(
-        area_counts.index,
-        area_counts.values
+        top_areas.index,
+        top_areas.values
     )
 
     plt.xticks(rotation=45)
 
     st.pyplot(fig2)
 
-# -----------------------------------
+# ---------------------------------------------------
 # GRAPH 3 - COST VS RATING
-# -----------------------------------
+# ---------------------------------------------------
 
 st.subheader("💰 Cost vs Rating")
 
-fig3, ax3 = plt.subplots(figsize=(8,4))
+fig3, ax3 = plt.subplots()
 
 ax3.scatter(
     df[cost_col],
     df[rating_col]
 )
 
-ax3.set_xlabel("Cost for Two")
+ax3.set_xlabel("Cost")
 ax3.set_ylabel("Rating")
 
 st.pyplot(fig3)
 
-# -----------------------------------
-# GRAPH 4 - TOP CUISINES
-# -----------------------------------
-
-if cuisine_col:
-
-    st.subheader("🍕 Top Cuisines")
-
-    cuisine_counts = df[cuisine_col].value_counts().head(5)
-
-    fig4, ax4 = plt.subplots(figsize=(6,6))
-
-    ax4.pie(
-        cuisine_counts.values,
-        labels=cuisine_counts.index,
-        autopct="%1.1f%%"
-    )
-
-    st.pyplot(fig4)
-
-# -----------------------------------
-# SUCCESS MESSAGE
-# -----------------------------------
+# ---------------------------------------------------
+# SUCCESS
+# ---------------------------------------------------
 
 st.success("✅ Dashboard Loaded Successfully!")
