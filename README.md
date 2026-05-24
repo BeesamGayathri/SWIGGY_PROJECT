@@ -70,12 +70,19 @@ The Streamlit dashboard provides:
 
 ---
 
-## 📈 Power BI Dashboard
+## 📊 Interactive Power BI Dashboard
 
-click here to open SWIGGY POWER BI DASHBOARD
-[https://app.powerbi.com/view?r=eyJrIjoiMzZiNzhkODUtNWZjZi00N2NjLWIwYjEtOWI4Yzk5NzlhYjVlIiwidCI6ImZmYzMxNjU1LTI0NTMtNGMzNy1iNmM3LWI4MzQ2ODM4MTc3NiJ9&utm_source=chatgpt.com]
----
+Explore the live Swiggy Data Analysis dashboard here:
 
+🔗 https://app.powerbi.com/view?r=eyJrIjoiMzZiNzhkODUtNWZjZi00N2NjLWIwYjEtOWI4Yzk5NzlhYjVlIiwidCI6ImZmYzMxNjU1LTI0NTMtNGMzNy1iNmM3LWI4MzQ2ODM4MTc3NiJ9
+
+### Dashboard Highlights
+- Restaurant Performance Analysis
+- Customer Ratings & Reviews
+- City-wise Restaurant Insights
+- Cuisine Distribution Analysis
+- Order & Consumer Behavior Trends
+- Interactive Visualizations using Power BI
 ## 🌐 Streamlit App Link
 
 🔗 Add your deployed Streamlit app link here
