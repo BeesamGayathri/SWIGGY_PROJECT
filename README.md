@@ -72,7 +72,7 @@ The Streamlit dashboard provides:
 
 ## 📈 Power BI Dashboard
 
-🔗 [Download Power BI Dashboard](https://drive.google.com/file/d/1_iXFZvW7jKsWWAbL5ET2fLqINf0xRj_j/view?usp=sharing)
+🔗 https://app.powerbi.com/view?r=eyJrIjoiMzZiNzhkODUtNWZjZi00N2NjLWIwYjEtOWI4Yzk5NzlhYjVlIiwidCI6ImZmYzMxNjU1LTI0NTMtNGMzNy1iNmM3LWI4MzQ2ODM4MTc3NiJ9&utm_source=chatgpt.com
 
 ---
 
