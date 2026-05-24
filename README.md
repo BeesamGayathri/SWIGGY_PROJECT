@@ -60,14 +60,18 @@ Swiggy_Project/
 
 ---
 
-## 📊 Streamlit Dashboard
+## 🚀 Live Streamlit Application
 
-The Streamlit dashboard provides:
-- Restaurant rating distribution
-- Top restaurant areas
-- Cost vs Rating visualization
-- Interactive data exploration
+Explore the deployed Swiggy Data Analysis project here:
 
+🌐 https://swiggy-data-analysis.streamlit.app/
+
+### Features
+- Interactive Power BI Dashboard
+- Restaurant & Consumer Insights
+- Data Visualization and Analytics
+- SQL-Based Analysis
+- Streamlit Deployment
 ---
 
 ## 📊 Interactive Power BI Dashboard
